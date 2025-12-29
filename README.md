@@ -1,5 +1,5 @@
 # hsh - horrid shell
-Completely Un-Optimized Shell
+Completely Un-Optimized Shell in C.
 
 ## How to Run ?
 
