@@ -4,37 +4,19 @@
 #define HSH_RL_BUFSIZE 1024;
 
 char *hsh_read_line(void){
-    int bufsize = HSH_RL_BUFSIZE;
-    char * buff = malloc(sizeof(char) * bufsize);
-    int c = 0;
-    int pos = 0;
-
-    if(!buff){
-        printf("hsh: Allocation Error\n");
-        exit(EXIT_FAILURE);
-    }
-
-    while(1){
-        c = getchar();
-
-        if(c == EOF || c == '\n'){
-            buff[pos] = '\0';
-            return buff;
-        } else {
-            buff[pos++] = c;
-        }
-        
-        if(pos >= bufsize){
-            bufsize += HSH_RL_BUFSIZE;
-            buff = realloc(buff, bufsize);
-            if(!buff){
-                printf("hsh: Allocation Error\n");
-                exit(EXIT_FAILURE);
-            }
-        }
-    }
+    char *line = NULL;
+    ssize_t bufsize = 0;
+    // getline gets the bufsize for us
     
-    // return buff;
+    if (getline(&line, &bufsize, stdin) == -1){
+        if(feof(stdin)){
+            exit(EXIT_SUCCESS);
+        } else {
+            perror("readline");
+            exit(EXIT_FAILURE);
+        }
+    }
+    return line;
 }
 
 void hsh_loop(void){
