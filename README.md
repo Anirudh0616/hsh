@@ -1,4 +1,4 @@
-# hsh
+# hsh - horrid shell
 Completely Un-Optimized Shell
 
 ## How to Run ?
