@@ -85,11 +85,12 @@ int hsh_launch(char ** args){
 int hsh_cd(char ** args);
 int hsh_help(char **args);
 int hsh_exit(char **args);
+int hsh_echo(char **args);
 
 
-char *builtin_str[] = {"cd", "help", "exit"};
+char *builtin_str[] = {"cd", "help", "exit", "echo"};
 
-int (*builtin_func[]) (char ** ) = {&hsh_cd, &hsh_help, &hsh_exit};
+int (*builtin_func[]) (char ** ) = {&hsh_cd, &hsh_help, &hsh_exit, &hsh_echo};
 
 int hsh_num_builtins(){
     return sizeof(builtin_str) / sizeof(char*);
@@ -106,10 +107,24 @@ int hsh_cd(char **args){
     }
     return 1;
 }
+int hsh_echo(char **args){
+    if(args[1] == NULL){
+        fprintf(stderr, "hsh: expected argument for \"echo\"\n");
+    } else {
+        int i = 1;
+        while(args[i]){
+            printf("%s ",args[i]);
+            i++;
+        }
+    }
+    return 1;
+}
 
 int hsh_help(char **args){
     int i;
-    printf("Why Would you give args for this.\n");
+    if(args[1] != NULL){
+        printf("Why Would you give args for this.\n");
+    }
     printf("\n");
     printf("Anirudh's hsh\n");
     printf("type out some program names or arguments and hit backspace, or was it enter?\n");
@@ -121,17 +136,30 @@ int hsh_help(char **args){
     printf("And many more, maybe.\n");
 
     printf("Use the man command ig, for info on other programs");
+    printf("\n");
     return 1;
 }
 
 int hsh_exit(char **args){
-    printf("Who gives args for an exit command?\n");
+    if(args[1] != NULL){
+        printf("Who gives args for an exit command?\n");
+    }
     return 0;
 }
 
 
-int hsh_execute(char ** args);
+int hsh_execute(char ** args){
+    if(args[0] == NULL){
+        return 1;
+    }
 
+    for(int i = 0; i < hsh_num_builtins();i++){
+        if(strcmp(args[0], builtin_str[i]) == 0){
+            return (*builtin_func[i])(args);
+        }
+    }
+    return hsh_launch(args);
+}
 
 void hsh_loop(void){
     char* line;
