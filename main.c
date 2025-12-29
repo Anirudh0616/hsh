@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<unistd.h>
+#include<sys/wait.h>
 
 #define HSH_RL_BUFSIZE 1024;
 
@@ -57,7 +58,7 @@ char *hsh_read_line(void){
 }
 
 
-int hsh_execute(char ** args){
+int hsh_launch(char ** args){
     pid_t pid, wpid;
     int status;
 
@@ -81,6 +82,57 @@ int hsh_execute(char ** args){
     return 1;
 }
 
+int hsh_cd(char ** args);
+int hsh_help(char **args);
+int hsh_exit(char **args);
+
+
+char *builtin_str[] = {"cd", "help", "exit"};
+
+int (*builtin_func[]) (char ** ) = {&hsh_cd, &hsh_help, &hsh_exit};
+
+int hsh_num_builtins(){
+    return sizeof(builtin_str) / sizeof(char*);
+}
+
+// Builtin Functions Implementations
+int hsh_cd(char **args){
+    if(args[1] == NULL){
+        fprintf(stderr, "hsh: expected argument for \"cd\"\n");
+    } else {
+        if(chdir(args[1]) != 0) {
+            perror("hsh");
+        }
+    }
+    return 1;
+}
+
+int hsh_help(char **args){
+    int i;
+    printf("Why Would you give args for this.\n");
+    printf("\n");
+    printf("Anirudh's hsh\n");
+    printf("type out some program names or arguments and hit backspace, or was it enter?\n");
+    printf("Builtin functions:\n");
+
+    for(int i = 0; i<hsh_num_builtins(); i++){
+        printf("    %s\n", builtin_str[i]);
+    }
+    printf("And many more, maybe.\n");
+
+    printf("Use the man command ig, for info on other programs");
+    return 1;
+}
+
+int hsh_exit(char **args){
+    printf("Who gives args for an exit command?\n");
+    return 0;
+}
+
+
+int hsh_execute(char ** args);
+
+
 void hsh_loop(void){
     char* line;
     char ** args;
@@ -90,7 +142,7 @@ void hsh_loop(void){
         printf("\n> ");
         line = hsh_read_line();
         args = hsh_split_line(line);
-        status = hsh_execute(args)
+        status = hsh_execute(args);
 
         free(line);
         free(args);
