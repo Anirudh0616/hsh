@@ -17,4 +17,4 @@ Then run this
 Have fun. 
 
 ## Instructions 
-Try help. Figure the rest out yourself. 
+Try "help". Figure the rest out yourself. 
