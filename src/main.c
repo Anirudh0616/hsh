@@ -7,7 +7,7 @@
 #define HSH_RL_BUFSIZE 1024;
 
 #define HSH_TOK_BUFSIZE 64
-#define HSH_TOK_DELIM " \t\r\n\a"
+#define HSH_TOK_DELIM " \t\r\n\a" // this is a set. not a sequence. i.e. for any of these characters, tokenize
 
 char **hsh_split_line(char *line){
     int bufsize = HSH_TOK_BUFSIZE, pos = 0;
@@ -18,7 +18,7 @@ char **hsh_split_line(char *line){
         fprintf(stderr, "hsh: allocation error\n");
         exit(EXIT_FAILURE);
     }
-
+    // Start tokenizing a new stirng (Since it is not Null)
     token = strtok(line, HSH_TOK_DELIM);
     while(token != NULL){
         tokens[pos++] = token;
@@ -30,8 +30,8 @@ char **hsh_split_line(char *line){
                 fprintf(stderr, "hsh: allocation error\n");
                 exit(EXIT_FAILURE);
             }
-
         }
+
         token = strtok(NULL, HSH_TOK_DELIM);
         // NULL -> Continue tokenizing the same string, from where it left off
     }
